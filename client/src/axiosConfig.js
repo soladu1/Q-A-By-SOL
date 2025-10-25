@@ -2,7 +2,9 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5500/api", // ✅ matches your backend route
+  baseURL: "https://q-a-by-sol.onrender.com", // ✅ matches your backend route
 });
 
 export default instance;
+
+// https://q-a-by-sol.onrender.com
