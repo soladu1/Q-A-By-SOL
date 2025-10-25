@@ -18,7 +18,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("/users/login", { email, password });
+      const res = await axios.post("/login", { email, password });
 
       console.log("✅ Login response:", res.data);
 

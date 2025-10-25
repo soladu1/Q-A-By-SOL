@@ -18,7 +18,7 @@ const SignUpPage = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await axios.post('/users/register', {
+      await axios.post('/register', {
   username: userNameDom.current.value,
   firstname: firstNameDom.current.value,
   lastname: lastNameDom.current.value,

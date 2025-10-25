@@ -20,7 +20,7 @@ function Questions() {
       }
 
       try {
-        const res = await axios.get("/users/check", {
+        const res = await axios.get("/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("✅ Authenticated user:", res.data);

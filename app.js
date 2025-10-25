@@ -31,8 +31,8 @@ app.use(cors({
 app.use(express.json());
 
 // ✅ Register routes
-app.use('/api/users', userRoute);
-app.use('/api/questions', authMiddleware, questionRoute);
+app.use('/users', userRoute);
+app.use('/questions', authMiddleware, questionRoute);
 
 // ✅ Root endpoint (for Render health check)
 app.get('/', (req, res) => {
