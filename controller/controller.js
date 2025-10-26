@@ -1,5 +1,5 @@
 // Database connection
-const dbconnection = require("../db/dbConfig");
+const dbConnection = require("../db/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { StatusCodes } = require("http-status-codes");
@@ -81,7 +81,7 @@ async function login(req, res) {
   }
 
   try {
-    const [users] = await dbconnection.query(
+    const [users] = await dbConnection.query(
       "SELECT userid, username, password FROM users WHERE email = ?",
       [email]
     );
