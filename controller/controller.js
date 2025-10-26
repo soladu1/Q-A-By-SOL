@@ -9,6 +9,7 @@ require("dotenv").config();
 async function register(req, res) {
   const { username, firstname, lastname, email, password } = req.body;
 
+  // ✅ Validate input
   if (!username || !firstname || !lastname || !email || !password) {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -16,38 +17,56 @@ async function register(req, res) {
   }
 
   try {
-    const [user] = await dbconection.query(
-      "SELECT username, userid FROM users WHERE username = ? OR email = ?",
+    // ✅ Check if username or email already exists
+    const [existingUsers] = await dbConnection.query(
+      "SELECT userid FROM users WHERE username = ? OR email = ?",
       [username, email]
     );
 
-    if (user.length > 0) {
+    if (existingUsers.length > 0) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Username or email already exists" });
     }
 
+    // ✅ Check password length
     if (password.length < 8) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Password must be at least 8 characters long" });
     }
 
+    // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [result] = await dbconection.query(
+    // ✅ Insert new user into database
+    const [result] = await dbConnection.query(
       "INSERT INTO users (username, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?)",
       [username, firstname, lastname, email, hashedPassword]
     );
 
-    res
-      .status(StatusCodes.CREATED)
-      .json({ message: "User registered successfully", userId: result.insertId });
+    // ✅ Generate JWT token for the new user
+    const token = jwt.sign(
+      { userId: result.insertId, username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    console.log(`✅ New user registered: ${username} (ID: ${result.insertId})`);
+
+    // ✅ Send success response
+    return res.status(StatusCodes.CREATED).json({
+      message: "User registered successfully",
+      userId: result.insertId,
+      username,
+      token,
+    });
+
   } catch (error) {
-    console.error("Error during registration:", error.message);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: error.message });
+    console.error("❌ Error during registration:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server error during registration. Please try again later.",
+    });
   }
 }
 
