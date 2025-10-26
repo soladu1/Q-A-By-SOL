@@ -2,5 +2,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://q-a-by-sol.onrender.com/api/users",  // 👈 correct prefix
+ baseURL: 'https://q-a-by-sol.onrender.com/api'
 });
