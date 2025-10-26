@@ -20,9 +20,27 @@ const questionRoute = require('./routes/questionRoute');
 const authMiddleware = require('./middleware/authMiddleware');
 
 // ✅ Configure and enable CORS
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+// const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+// app.use(cors({
+//   origin: allowedOrigin,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   credentials: true,
+// }));
+
+const allowedOrigins = [
+  'https://questionandanswerbysol.netlify.app',
+  'http://localhost:5173'
+];
+
 app.use(cors({
-  origin: allowedOrigin,
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman, curl
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
