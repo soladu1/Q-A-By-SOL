@@ -33,7 +33,7 @@ const Login = () => {
         window.dispatchEvent(new Event("authChange"));
 
         // Redirect to Home after ensuring state updated
-        // navigate("/home", { replace: true,user:res.data.user  });
+         navigate("/home", { replace: true,user:res.data.user  });
       } else {
         setErrorMessage(res.data?.message || "Invalid login response.");
       }
