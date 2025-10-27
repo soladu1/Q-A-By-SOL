@@ -44,7 +44,7 @@ app.use(express.json());
 
 // ✅ Register routes
 app.use("/users/register", register);
-app.post("users/login", login);
+app.use("users/login", login);
 
 app.use("/questions", authMiddleware, questionRoute);
 
