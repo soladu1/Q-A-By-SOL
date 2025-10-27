@@ -16,6 +16,7 @@ const dbConnection = require("./db/dbConfig");
 const userRoute = require("./routes/userRoute");
 const questionRoute = require("./routes/questionRoute");
 const authMiddleware = require("./middleware/authMiddleware");
+const { register } = require("./controller/controller");
 
 // ✅ Configure and enable CORS for both local and deployed frontends
 const allowedOrigins = [
@@ -42,7 +43,7 @@ app.use(
 app.use(express.json());
 
 // ✅ Register routes
-app.use("/users", userRoute);
+app.use("/users/register", register);
 app.use("/questions", authMiddleware, questionRoute);
 
 // ✅ Root endpoint (for Render health check)
