@@ -7,7 +7,7 @@ const { register, login, checkUser } = require("../controller/controller");
 router.post("/register", register);
 
 // ✅ Login route
-router.post("/login", login);
+router.post("users/login", login);
 
 // ✅ Check user route (protected)
 router.get("/check", authMiddleware, checkUser);
