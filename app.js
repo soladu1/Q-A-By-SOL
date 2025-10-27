@@ -43,10 +43,10 @@ app.use(
 app.use(express.json());
 
 // ✅ Register routes
-app.use("/users/register", register);
-app.use("users/login", login);
+app.post("/users/register", register);
+app.post("users/login", login);
 
-app.use("/questions", authMiddleware, questionRoute);
+app.post("/questions", authMiddleware, questionRoute);
 
 // ✅ Root endpoint (for Render health check)
 app.get("/", (req, res) => {
