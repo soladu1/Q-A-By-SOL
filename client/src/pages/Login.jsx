@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../axiosConfig"; // centralized axios instance
+import axios from "../axiosConfig"; // ✅ centralized axios instance
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Login = () => {
   const handleSignUpRedirect = () => navigate("/register");
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent page refresh
+    e.preventDefault();
     setErrorMessage("");
     setIsLoading(true);
 
@@ -23,17 +23,19 @@ const Login = () => {
       console.log("✅ Login response:", res.data);
 
       if (res.data?.token) {
-        // Save token and optional username
+        // ✅ Save token and username in localStorage
         localStorage.setItem("token", res.data.token);
-        if (res.data.userName) localStorage.setItem("userName", res.data.userName);
+        if (res.data.user?.username) {
+          localStorage.setItem("userName", res.data.user.username);
+        }
 
-        console.log("✅ Token saved to localStorage");
+        console.log("✅ Token and username saved in localStorage");
 
-        // Dispatch auth change to update App-level state
+        // ✅ Notify app-wide auth change
         window.dispatchEvent(new Event("authChange"));
 
-        // Redirect to Home after ensuring state updated
-navigate("/home", { replace: true, state: { user: res.data.user } });
+        // ✅ Redirect user to Home page
+        navigate("/home", { replace: true });
       } else {
         setErrorMessage(res.data?.message || "Invalid login response.");
       }
@@ -92,18 +94,79 @@ navigate("/home", { replace: true, state: { user: res.data.user } });
   );
 };
 
-// Styles (unchanged)
+// ✅ Styles preserved exactly
 const styles = {
-  wrapper: { height: "90vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8f9fa" },
-  container: { display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", fontFamily: "Arial, sans-serif", backgroundColor: "#ffffff", border: "2px solid #0073b1", borderRadius: "5px", padding: "40px 50px", width: "400px", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)" },
-  mainTitle: { fontSize: "28px", fontWeight: "bold", marginBottom: "20px", color: "#0073b1", textAlign: "center" },
+  wrapper: {
+    height: "90vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f8f9fa",
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#ffffff",
+    border: "2px solid #0073b1",
+    borderRadius: "5px",
+    padding: "40px 50px",
+    width: "400px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+  },
+  mainTitle: {
+    fontSize: "28px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "#0073b1",
+    textAlign: "center",
+  },
   formSection: { width: "100%" },
-  sectionTitle: { fontSize: "15px", fontWeight: "bold", margin: "15px 0 8px 0", color: "#333" },
-  fullWidthInput: { width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px", marginBottom: "15px" },
-  joinButton: { width: "100%", padding: "12px", backgroundColor: "#0073b1", color: "white", border: "none", borderRadius: "24px", fontSize: "16px", fontWeight: "bold", cursor: "pointer", marginTop: "10px" },
-  loginPrompt: { fontSize: "14px", color: "#666", marginTop: "20px", textAlign: "center" },
-  loginLink: { color: "#0073b1", cursor: "pointer", textDecoration: "underline" },
-  errorMessage: { color: "red", fontSize: "14px", marginBottom: "10px", textAlign: "center" },
+  sectionTitle: {
+    fontSize: "15px",
+    fontWeight: "bold",
+    margin: "15px 0 8px 0",
+    color: "#333",
+  },
+  fullWidthInput: {
+    width: "100%",
+    padding: "12px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    fontSize: "14px",
+    marginBottom: "15px",
+  },
+  joinButton: {
+    width: "100%",
+    padding: "12px",
+    backgroundColor: "#0073b1",
+    color: "white",
+    border: "none",
+    borderRadius: "24px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginTop: "10px",
+  },
+  loginPrompt: {
+    fontSize: "14px",
+    color: "#666",
+    marginTop: "20px",
+    textAlign: "center",
+  },
+  loginLink: {
+    color: "#0073b1",
+    cursor: "pointer",
+    textDecoration: "underline",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: "14px",
+    marginBottom: "10px",
+    textAlign: "center",
+  },
 };
 
 export default Login;

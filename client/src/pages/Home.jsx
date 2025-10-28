@@ -1,10 +1,11 @@
 // src/pages/Home.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "../axiosConfig"; // centralized axios
 
 function Home() {
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
@@ -16,13 +17,26 @@ function Home() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // prevent multiple navigations or overlapping checks
+  const checkingRef = useRef(false);
+  const navigatingRef = useRef(false);
+
   // ✅ Check authentication when component mounts
   useEffect(() => {
     const checkAuth = async () => {
+      if (checkingRef.current) return; // avoid duplicate checks
+      checkingRef.current = true;
+
       const token = localStorage.getItem("token");
       if (!token) {
         console.warn("⚠️ No token found, redirecting to login...");
-        navigate("/login", { replace: true });
+        setIsAuthenticated(false);
+        setLoading(false);
+        if (!navigatingRef.current) {
+          navigatingRef.current = true;
+          navigate("/login", { replace: true });
+        }
+        checkingRef.current = false;
         return;
       }
 
@@ -35,8 +49,9 @@ function Home() {
 
         if (res.data && res.data.user) {
           setIsAuthenticated(true);
-          setUserName(res.data.user.username || "");
-          localStorage.setItem("userName", res.data.user.username || "");
+          const name = res.data.user.username || localStorage.getItem("userName") || "";
+          setUserName(name);
+          localStorage.setItem("userName", name);
         } else {
           throw new Error("Invalid user data");
         }
@@ -48,15 +63,27 @@ function Home() {
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
         setIsAuthenticated(false);
-        navigate("/login", { replace: true });
+        if (!navigatingRef.current) {
+          navigatingRef.current = true;
+          navigate("/login", { replace: true });
+        }
       } finally {
         setLoading(false);
+        checkingRef.current = false;
       }
     };
 
     checkAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    // Re-run when "authChange" event is fired from login/logout
+    const onAuthChange = () => {
+      console.log("🔄 Auth change detected");
+      if (!checkingRef.current) checkAuth();
+    };
+
+    window.addEventListener("authChange", onAuthChange);
+    return () => window.removeEventListener("authChange", onAuthChange);
+  }, [navigate]);
 
   // ✅ Logout function
   const handleLogout = () => {
