@@ -28,7 +28,7 @@ function Home() {
       }
 
       try {
-        const res = await axios.get("/check", {
+        const res = await axios.get("/users/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
