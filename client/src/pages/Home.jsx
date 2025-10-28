@@ -1,13 +1,10 @@
 // src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "../axiosConfig"; // centralized axios
 
 function Home() {
   const navigate = useNavigate();
-  const location = useLocation();
-  console.log(location); // e.g., "/home"
-
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
@@ -198,44 +195,16 @@ function Home() {
 // ✅ Styles preserved
 const styles = {
   pageContainer: { fontFamily: "Arial, sans-serif", backgroundColor: "#fff", minHeight: "100vh" },
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "20px 100px",
-    borderBottom: "1px solid #e0e0e0",
-  },
+  navbar: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 100px", borderBottom: "1px solid #e0e0e0" },
   logo: { fontSize: "24px", fontWeight: "bold", display: "flex", alignItems: "center" },
   navLinks: { display: "flex", alignItems: "center", gap: "25px" },
-  logoutButton: {
-    backgroundColor: "white",
-    color: "black",
-    border: "1px solid black",
-    padding: "8px 20px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "15px",
-    transition: "all 0.3s ease",
-  },
+  logoutButton: { backgroundColor: "white", color: "black", border: "1px solid black", padding: "8px 20px", borderRadius: "6px", cursor: "pointer", fontSize: "15px", transition: "all 0.3s ease" },
   welcomeMessage: { fontSize: "16px", fontWeight: "bold", color: "#4f6df5" },
-  contentContainer: {
-    textAlign: "center",
-    marginTop: "60px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "40px",
-  },
+  contentContainer: { textAlign: "center", marginTop: "60px", display: "flex", flexDirection: "column", alignItems: "center", gap: "40px" },
   instructions: { maxWidth: "600px" },
   title: { fontSize: "20px", fontWeight: "bold", marginBottom: "15px" },
   list: { textAlign: "left", lineHeight: "1.8", fontSize: "15px", color: "#333" },
-  formContainer: {
-    backgroundColor: "#fff",
-    width: "600px",
-    padding: "30px",
-    borderRadius: "12px",
-    boxShadow: "0px 3px 10px rgba(0,0,0,0.1)",
-  },
+  formContainer: { backgroundColor: "#fff", width: "600px", padding: "30px", borderRadius: "12px", boxShadow: "0px 3px 10px rgba(0,0,0,0.1)" },
   formTitle: { fontSize: "18px", fontWeight: "bold" },
   subLink: { display: "block", color: "#555", marginBottom: "20px", textDecoration: "underline", fontSize: "14px" },
   input: { width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "6px", fontSize: "14px", marginBottom: "15px" },
