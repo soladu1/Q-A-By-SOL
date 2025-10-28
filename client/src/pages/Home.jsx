@@ -5,11 +5,13 @@ import axios from "../axiosConfig"; // centralized axios
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location); // e.g., "/home"
+
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [userName, setUserName] = useState("");
-  const location = useLocation();
-  console.log(location); // e.g., "/products"
+  const [userName, setUserName] = useState("");
+
   // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -28,23 +30,16 @@ function Home() {
       }
 
       try {
-        const res = await axios.get("/check", {
+        const res = await axios.get("/users/check", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         console.log("✅ Auth check success:", res.data);
 
-        // Flexible check: any valid response means authenticated
-        if (res.data && res.data.valid !== false) {
+        if (res.data && res.data.user) {
           setIsAuthenticated(true);
-
-          // Optional: save username if available
-          // const fetchedName =
-          //   res.data?.user?.userName ||
-          //   res.data?.user?.name ||
-          //   localStorage.getItem("userName") ||
-          //   "";
-          // setUserName(fetchedName);
+          setUserName(res.data.user.username || "");
+          localStorage.setItem("userName", res.data.user.username || "");
         } else {
           throw new Error("Invalid user data");
         }
@@ -106,24 +101,27 @@ function Home() {
   const handleGoToQuestions = () => navigate("/questions");
 
   if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
-  if (!isAuthenticated) return null; // prevent showing page while checking auth
+  if (!isAuthenticated) return null;
 
   return (
     <div style={styles.pageContainer}>
       {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.logo}>
-          <Link to='https://solsportfolio.netlify.app' target="_blank" style={{ textDecoration: "none" }}>
-          <span style={{ color: "#FF7A00", fontWeight: "bold" }}>SOLO</span>
-          <span style={{ color: "black", fontWeight: "bold" }}>MON</span>
+          <Link
+            to="https://solsportfolio.netlify.app"
+            target="_blank"
+            style={{ textDecoration: "none" }}
+          >
+            <span style={{ color: "#FF7A00", fontWeight: "bold" }}>SOLO</span>
+            <span style={{ color: "black", fontWeight: "bold" }}>MON</span>
           </Link>
         </div>
 
         <div style={styles.navLinks}>
-          {/* <span style={styles.welcomeMessage}>
-             {userName ? userName : "User"}!
-          </span> */}
-
+          {userName && (
+            <span style={styles.welcomeMessage}>Welcome {userName}!</span>
+          )}
           <button style={styles.logoutButton} onClick={handleLogout}>
             Log Out
           </button>
@@ -199,11 +197,7 @@ function Home() {
 
 // ✅ Styles preserved
 const styles = {
-  pageContainer: {
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#fff",
-    minHeight: "100vh",
-  },
+  pageContainer: { fontFamily: "Arial, sans-serif", backgroundColor: "#fff", minHeight: "100vh" },
   navbar: {
     display: "flex",
     justifyContent: "space-between",
@@ -211,12 +205,7 @@ const styles = {
     padding: "20px 100px",
     borderBottom: "1px solid #e0e0e0",
   },
-  logo: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-  },
+  logo: { fontSize: "24px", fontWeight: "bold", display: "flex", alignItems: "center" },
   navLinks: { display: "flex", alignItems: "center", gap: "25px" },
   logoutButton: {
     backgroundColor: "white",
@@ -239,12 +228,7 @@ const styles = {
   },
   instructions: { maxWidth: "600px" },
   title: { fontSize: "20px", fontWeight: "bold", marginBottom: "15px" },
-  list: {
-    textAlign: "left",
-    lineHeight: "1.8",
-    fontSize: "15px",
-    color: "#333",
-  },
+  list: { textAlign: "left", lineHeight: "1.8", fontSize: "15px", color: "#333" },
   formContainer: {
     backgroundColor: "#fff",
     width: "600px",
@@ -253,39 +237,10 @@ const styles = {
     boxShadow: "0px 3px 10px rgba(0,0,0,0.1)",
   },
   formTitle: { fontSize: "18px", fontWeight: "bold" },
-  subLink: {
-    display: "block",
-    color: "#555",
-    marginBottom: "20px",
-    textDecoration: "underline",
-    fontSize: "14px",
-  },
-  input: {
-    width: "100%",
-    padding: "12px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    fontSize: "14px",
-    marginBottom: "15px",
-  },
-  textarea: {
-    width: "100%",
-    height: "120px",
-    padding: "12px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    fontSize: "14px",
-    marginBottom: "20px",
-  },
-  postButton: {
-    backgroundColor: "#4f6df5",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "12px 20px",
-    fontSize: "15px",
-    cursor: "pointer",
-  },
+  subLink: { display: "block", color: "#555", marginBottom: "20px", textDecoration: "underline", fontSize: "14px" },
+  input: { width: "100%", padding: "12px", border: "1px solid #ccc", borderRadius: "6px", fontSize: "14px", marginBottom: "15px" },
+  textarea: { width: "100%", height: "120px", padding: "12px", border: "1px solid #ccc", borderRadius: "6px", fontSize: "14px", marginBottom: "20px" },
+  postButton: { backgroundColor: "#4f6df5", color: "white", border: "none", borderRadius: "6px", padding: "12px 20px", fontSize: "15px", cursor: "pointer" },
 };
 
 export default Home;
