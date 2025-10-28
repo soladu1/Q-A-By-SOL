@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -12,11 +11,9 @@ const PORT = process.env.PORT || 5500;
 // ✅ Database connection
 const dbConnection = require("./db/dbConfig");
 
-// ✅ Import routes and middleware
+// ✅ Import routes
 const userRoute = require("./routes/userRoute");
 const questionRoute = require("./routes/questionRoute");
-const authMiddleware = require("./middleware/authMiddleware");
-const { register, login } = require("./controller/controller");
 
 // ✅ Configure and enable CORS for both local and deployed frontends
 const allowedOrigins = [
@@ -42,11 +39,9 @@ app.use(
 // ✅ Parse incoming JSON requests
 app.use(express.json());
 
-// ✅ Register routes
-app.post("/users/register", register);
-app.post("/users/login", login);
-//app.get("/users/check", authMiddleware, checkUser);
-app.post("/questions", authMiddleware, questionRoute);
+// ✅ Register main routes
+app.use("/users", userRoute); // 👈 all user-related endpoints (register, login, check)
+app.use("/questions", questionRoute); // 👈 question routes (can add authMiddleware inside questionRoute.js)
 
 // ✅ Root endpoint (for Render health check)
 app.get("/", (req, res) => {
@@ -66,11 +61,10 @@ async function start() {
     });
   } catch (err) {
     console.error("❌ Database connection failed:", err.message);
-    process.exit(1); // Exit if DB connection fails
+    process.exit(1);
   }
 }
 
 start();
 
-// ✅ Export app for testing or serverless use
 module.exports = app;
