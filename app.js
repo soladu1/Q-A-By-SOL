@@ -45,7 +45,7 @@ app.use(express.json());
 // ✅ Register routes
 app.post("/users/register", register);
 app.post("/users/login", login);
-
+app.get("/users/check", authMiddleware, checkUser);
 app.post("/questions", authMiddleware, questionRoute);
 
 // ✅ Root endpoint (for Render health check)
